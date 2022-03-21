@@ -1,0 +1,35 @@
+.mobile {
+  display: none !important;
+}
+@media (max-width: 599px) {
+  .mobile {
+    display: block !important;
+  }
+}
+
+.mobile-flex {
+  display: none !important;
+}
+@media (max-width: 599px) {
+  .mobile-flex {
+    display: flex !important;
+  }
+}
+
+.desktop {
+  display: block !important;
+}
+@media (max-width: 599px) {
+  .desktop {
+    display: none !important;
+  }
+}
+
+.desktop-flex {
+  display: flex !important;
+}
+@media (max-width: 599px) {
+  .desktop-flex {
+    display: none !important;
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "name": "tiramisu-nft",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@metamask/providers": "^8.1.1",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.0.3",
+    "@types/node": "^16.11.17",
+    "@types/react": "^17.0.38",
+    "@types/react-dom": "^17.0.11",
+    "customize-cra": "^1.0.0",
+    "decimal.js": "^10.3.1",
+    "ethers": "^5.6.1",
+    "js-cookie": "^3.0.1",
+    "leaflet": "^1.7.1",
+    "react": "^17.0.2",
+    "react-app-rewired": "^2.2.1",
+    "react-dom": "^17.0.2",
+    "react-helmet-async": "^1.2.3",
+    "react-router-dom": "^6.2.1",
+    "react-scripts": "^5.0.0",
+    "styled-jsx": "^5.0.0",
+    "tua-body-scroll-lock": "^1.2.1",
+    "typescript": "^4.5.4",
+    "web-vitals": "^2.1.2"
+  },
+  "devDependencies": {
+    "@types/react-helmet": "^6.1.5",
+    "@typescript-eslint/eslint-plugin": "^5.13.0",
+    "@typescript-eslint/parser": "^5.13.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^10.0.0",
+    "env-cmd": "^10.1.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-typescript": "^16.1.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "eslint-plugin-sort-keys-fix": "^1.1.2",
+    "eslint-plugin-typescript-sort-keys": "^2.1.0",
+    "prettier": "^2.5.1",
+    "rimraf": "^3.0.2"
+  },
+  "scripts": {
+    "start": "env-cmd -f .env.dev react-app-rewired start",
+    "build": "rimraf _dist && BUILD_PATH=\"./_dist\" react-app-rewired build",
+    "build:prod": "env-cmd -f .env.prod yarn build",
+    "test": "react-app-rewired test",
+    "lint": "eslint --cache .",
+    "lint:fix": "eslint --fix --cache .",
+    "kill:win": "powershell \"Get-Process | Where Name –Like “node*” | Stop-Process\""
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "engines": {
+    "npm": "please-use-yarn",
+    "yarn": ">= 1.17.3",
+    "node": ">= 12.5.0"
+  }
+}
