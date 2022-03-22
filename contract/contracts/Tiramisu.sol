@@ -13,11 +13,17 @@ contract Tiramisu is ERC721, Ownable {
     uint public constant MAX_SUPPLY = 1000;
     uint256 public constant PRICE = 0.1 ether;
 
+    bool private premintPhase = true;
+    mapping (address => bool) private eligibleForPremint;
+
     address private constant addr80 = 0x36c174b93D814c91909D5870bd063e228bbAf8c5;
     address private constant addr20 = 0xc7E7747fa605633817C706377559e5f340A5276e;
 
-    constructor(string memory baseURI) ERC721('Tiramisu Recipe by STILLZ', 'TMISU') {
+    constructor(string memory baseURI, address[] memory eligibleForPremintArr) ERC721('Tiramisu Recipe by STILLZ', 'TMISU') {
         _baseTokenURI = baseURI;
+
+        for (uint256 i = 0; i < eligibleForPremintArr.length; i++)
+            eligibleForPremint[eligibleForPremintArr[i]] = true;
 
         uint mintIndex = _tokenSupply.current();
         for (uint i; i < 30; i++) {
@@ -26,14 +32,17 @@ contract Tiramisu is ERC721, Ownable {
         }
     }
 
-    function mint(uint256 quantity) external payable {
-        require(msg.value == PRICE * quantity, 'incorrect ether amount supplied');
-        uint mintIndex = _tokenSupply.current();
-        require(mintIndex + quantity < MAX_SUPPLY, 'exceeds token supply');
-        for (uint256 i = 0; i < quantity; i++) {
-            _safeMint(msg.sender, mintIndex + i);
-            _tokenSupply.increment();
+    function mint() external payable {
+        if (premintPhase) {
+            require(isAddressEligibleForPremint(), 'address ineligible for preminting');
+        } else {
+            require(msg.value == PRICE, 'incorrect ether amount supplied');
         }
+
+        uint mintIndex = _tokenSupply.current();
+        require(mintIndex < MAX_SUPPLY, 'exceeds token supply');
+        _safeMint(msg.sender, mintIndex);
+        _tokenSupply.increment();
     }
 
     function setBaseURI(string memory baseURI) public onlyOwner {
@@ -45,6 +54,14 @@ contract Tiramisu is ERC721, Ownable {
         string memory json = ".json";
         string memory baseURI = _baseTokenURI;
         return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString(), json)) : "";
+    }
+
+    function isAddressEligibleForPremint() public view returns (bool) {
+        return eligibleForPremint[msg.sender];
+    }
+
+    function isPremintPhase() public view returns (bool) {
+        return premintPhase;
     }
 
     function isApprovedForAll(address owner, address operator) public view override returns (bool) {
@@ -60,5 +77,9 @@ contract Tiramisu is ERC721, Ownable {
         (bool status1,) = addr80.call{value : (balance * 8) / 10}("");
         (bool status2,) = addr20.call{value : (balance * 2) / 10}("");
         require(status1 == true && status2 == true, 'withdraw failed');
+    }
+
+    function setIsPremintPhase(bool _isPremintPhase) public onlyOwner {
+        premintPhase = _isPremintPhase;
     }
 }

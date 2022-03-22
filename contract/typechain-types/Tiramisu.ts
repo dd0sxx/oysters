@@ -25,8 +25,10 @@ export interface TiramisuInterface extends utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "isAddressEligibleForPremint()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "mint(uint256)": FunctionFragment;
+    "isPremintPhase()": FunctionFragment;
+    "mint()": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
@@ -34,6 +36,7 @@ export interface TiramisuInterface extends utils.Interface {
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setBaseURI(string)": FunctionFragment;
+    "setIsPremintPhase(bool)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
@@ -57,10 +60,18 @@ export interface TiramisuInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "isAddressEligibleForPremint",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
-  encodeFunctionData(functionFragment: "mint", values: [BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "isPremintPhase",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "mint", values?: undefined): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -80,6 +91,10 @@ export interface TiramisuInterface extends utils.Interface {
     values: [string, boolean]
   ): string;
   encodeFunctionData(functionFragment: "setBaseURI", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "setIsPremintPhase",
+    values: [boolean]
+  ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
@@ -108,7 +123,15 @@ export interface TiramisuInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "isAddressEligibleForPremint",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "isApprovedForAll",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isPremintPhase",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
@@ -128,6 +151,10 @@ export interface TiramisuInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setBaseURI", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setIsPremintPhase",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
@@ -230,14 +257,17 @@ export interface Tiramisu extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    isAddressEligibleForPremint(overrides?: CallOverrides): Promise<[boolean]>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    isPremintPhase(overrides?: CallOverrides): Promise<[boolean]>;
+
     mint(
-      quantity: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -277,6 +307,11 @@ export interface Tiramisu extends BaseContract {
 
     setBaseURI(
       baseURI: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setIsPremintPhase(
+      _isPremintPhase: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -326,14 +361,17 @@ export interface Tiramisu extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  isAddressEligibleForPremint(overrides?: CallOverrides): Promise<boolean>;
+
   isApprovedForAll(
     owner: string,
     operator: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  isPremintPhase(overrides?: CallOverrides): Promise<boolean>;
+
   mint(
-    quantity: BigNumberish,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -370,6 +408,11 @@ export interface Tiramisu extends BaseContract {
 
   setBaseURI(
     baseURI: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setIsPremintPhase(
+    _isPremintPhase: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -416,13 +459,17 @@ export interface Tiramisu extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    isAddressEligibleForPremint(overrides?: CallOverrides): Promise<boolean>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    mint(quantity: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    isPremintPhase(overrides?: CallOverrides): Promise<boolean>;
+
+    mint(overrides?: CallOverrides): Promise<void>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -454,6 +501,11 @@ export interface Tiramisu extends BaseContract {
     ): Promise<void>;
 
     setBaseURI(baseURI: string, overrides?: CallOverrides): Promise<void>;
+
+    setIsPremintPhase(
+      _isPremintPhase: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -541,14 +593,17 @@ export interface Tiramisu extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    isAddressEligibleForPremint(overrides?: CallOverrides): Promise<BigNumber>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    isPremintPhase(overrides?: CallOverrides): Promise<BigNumber>;
+
     mint(
-      quantity: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -588,6 +643,11 @@ export interface Tiramisu extends BaseContract {
 
     setBaseURI(
       baseURI: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setIsPremintPhase(
+      _isPremintPhase: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -641,14 +701,19 @@ export interface Tiramisu extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    isAddressEligibleForPremint(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    isPremintPhase(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     mint(
-      quantity: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -688,6 +753,11 @@ export interface Tiramisu extends BaseContract {
 
     setBaseURI(
       baseURI: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setIsPremintPhase(
+      _isPremintPhase: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

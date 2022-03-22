@@ -22,7 +22,7 @@ async function main() {
   const contractFactory = await ethers.getContractFactory("Tiramisu");
   console.log('0')
 
-  const contract = await contractFactory.deploy("");
+  const contract = await contractFactory.deploy("", ["0x36c174b93D814c91909D5870bd063e228bbAf8c5"]);
   console.log('1')
 
   await contract.deployed()
@@ -38,3 +38,4 @@ main()
   process.exitCode = 1;
 });
 
+// contract address: 0xA12FC4bdC7F80CE79747e0242252F0CD7626191a
