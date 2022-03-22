@@ -5,21 +5,35 @@ import { Main } from "./components/Main/Main";
 import { SocialBar } from "./components/SocialBar/SocialBar";
 import { Notification } from "./notifications/Notification";
 import { AppStage, AppState } from "./state/AppState";
-import { Account } from "./wallet/Account";
-import { checkIfWalletIsConnected } from "./wallet/checkIfWalletIsConnected";
+import { checkIfCanMint } from "./wallet/checkIfCanMint";
+import { checkSilentlyIfConnectedToWallet } from "./wallet/checkSilentlyIfConnectedToWallet";
+import { connectWallet } from "./wallet/connectWallet";
 
 export const App = () => {
   const [appState, setAppState] = useState<AppState>({
     stage: AppStage.disconnected,
   });
-  const [currentAccount, setCurrentAccount] = useState<Account>("");
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [isCorrectNet, setIsCorrectNet] = useState<boolean>(true);
+
+  const connectWalletAndHandleResult = async () => {
+    const wallet = await connectWallet();
+    if (wallet) {
+      if (checkIfCanMint(wallet)) {
+        setAppState(oldVal => ({ ...oldVal, stage: AppStage.connected }));
+        return;
+      }
+      setAppState(oldVal => ({
+        ...oldVal,
+        stage: AppStage.notOnPreMintList,
+      }));
+    }
+  };
 
   useEffect(() => {
-    checkIfWalletIsConnected({
-      setCurrentAccount,
-      setIsCorrectNet: setIsCorrectNet,
+    checkSilentlyIfConnectedToWallet().then(connected => {
+      if (connected) {
+        connectWalletAndHandleResult();
+      }
     });
   }, []);
 
@@ -28,8 +42,7 @@ export const App = () => {
       <SocialBar />
       <Main
         appState={appState}
-        setCurrentAccount={setCurrentAccount}
-        currentAccount={currentAccount}
+        connectWalletAndHandleResult={connectWalletAndHandleResult}
       />
     </>
   );

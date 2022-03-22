@@ -72,5 +72,5 @@ module.exports = {
       }
     }
   },
-  "ignorePatterns": [".idea/*", "artifacts/*", "_dist/*", "node_modules/*", ".eslintrc.js"],
+  "ignorePatterns": [".idea/*", "artifacts/*", "_dist/*", "node_modules/*", ".eslintrc.js", "contract/*"],
 }

@@ -3,12 +3,12 @@ import { NotificationType } from "../notifications/Notification";
 import { NotificationsSetter } from "../notifications/NotificationsSetter";
 import { generateUUID } from "../utils/generateUUID";
 
-import { Account } from "./Account";
 import { askContractToMintNFT } from "./askContractToMintNFT";
 import { connectWallet } from "./connectWallet";
-import { ensureCorrectNet } from "./ensureCorrectNet";
 import { getContractThroughEthereumProvider } from "./getContractThroughEthereumProvider";
 import { getCorrectNetName } from "./getCorrectNetName";
+import { isCorrectNet } from "./isCorrectNet";
+import { WalletAddr } from "./Wallet";
 
 const isPositiveInteger = (str: string) => {
   return /^([1-9]\d*)$/.test(str);
@@ -16,23 +16,21 @@ const isPositiveInteger = (str: string) => {
 
 export const mintNFT = async ({
   currentAccount,
-  setCurrentAccount,
   tokensCount: tokensCountStr,
   setNotifications,
-  setIsCorrectNet,
 }: {
-  currentAccount: Account;
-  setCurrentAccount: (acc: Account) => void;
+  currentAccount: WalletAddr;
+  setCurrentAccount: (acc: WalletAddr) => void;
   setIsCorrectNet: (b: boolean) => void;
   setNotifications: NotificationsSetter;
   tokensCount: string;
 }): Promise<boolean> => {
-  let acc: Account | undefined = currentAccount;
+  let acc: WalletAddr | undefined = currentAccount;
 
   const notificationID: string = generateUUID();
 
   if (!acc) {
-    acc = await connectWallet({ setCurrentAccount });
+    acc = (await connectWallet())?.walletAddr;
     if (!acc) {
       addOrReplaceNotification({
         newNotification: { id: notificationID, type: NotificationType.Error },
@@ -42,10 +40,8 @@ export const mintNFT = async ({
     }
   }
 
-  const isCorrectNet = await ensureCorrectNet({
-    setIsCorrectNet,
-  });
-  if (!isCorrectNet) {
+  const correctNet = await isCorrectNet();
+  if (!correctNet) {
     addOrReplaceNotification({
       newNotification: {
         id: notificationID,

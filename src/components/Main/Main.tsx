@@ -1,9 +1,6 @@
 import { FC } from "react";
 
-import { Setter } from "../../helpers/types";
 import { AppStage, AppState } from "../../state/AppState";
-import { Account } from "../../wallet/Account";
-import { connectWallet } from "../../wallet/connectWallet";
 
 const contentByAppStage: Record<
   AppStage,
@@ -16,7 +13,9 @@ const contentByAppStage: Record<
 > = {
   [AppStage.connected]: {
     BelowHeader: () => (
-      <>the wallet you have connected isn’t on our premint list</>
+      <div className="text-under-header">
+        the wallet you have connected isn’t on our premint list
+      </div>
     ),
     Header: () => <>{"432 left..."}</>,
     className: "connected",
@@ -33,7 +32,11 @@ const contentByAppStage: Record<
     imgSrc: "/imgs/rainbow-EX.gif",
   },
   [AppStage.notOnPreMintList]: {
-    BelowHeader: () => <></>,
+    BelowHeader: () => (
+      <div className="text-under-header">
+        the wallet you have connected isn’t on our premint list
+      </div>
+    ),
     Header: () => <>{"sorry..."}</>,
     className: "notOnPreMintList",
     imgSrc: "/imgs/rotten_no--bg.gif",
@@ -65,9 +68,8 @@ const MainImg: FC<{ appState: AppState }> = ({ appState }) => {
 
 export const Main: FC<{
   appState: AppState;
-  currentAccount: Account;
-  setCurrentAccount: Setter<Account>;
-}> = ({ appState, setCurrentAccount }) => {
+  connectWalletAndHandleResult: () => Promise<void>;
+}> = ({ appState, connectWalletAndHandleResult }) => {
   const { BelowHeader, Header } = contentByAppStage[appState.stage];
 
   return (
@@ -78,11 +80,7 @@ export const Main: FC<{
           <h1>
             <Header />
           </h1>
-          <BelowHeader
-            connectWallet={async () => {
-              return connectWallet({ setCurrentAccount }) as Promise<void>;
-            }}
-          />
+          <BelowHeader connectWallet={connectWalletAndHandleResult} />
         </main>
       </div>
 
@@ -102,6 +100,9 @@ export const Main: FC<{
 
         :global(.button-under-header) {
           margin-top: 25px;
+        }
+        :global(.text-under-header) {
+          margin-top: 28px;
         }
       `}</style>
     </>
