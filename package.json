@@ -62,6 +62,7 @@
     "start": "env-cmd -f .env.dev react-app-rewired start",
     "build": "rimraf _dist && BUILD_PATH=\"./_dist\" react-app-rewired build",
     "build:prod": "env-cmd -f .env.prod yarn build",
+    "build:dev": "env-cmd -f .env.dev yarn build",
     "test": "react-app-rewired test",
     "lint": "eslint --cache .",
     "lint:fix": "eslint --fix --cache .",
