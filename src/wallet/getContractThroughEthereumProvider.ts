@@ -17,7 +17,7 @@ export const getContractThroughEthereumProvider =
     }
 
     try {
-      const provider = getWeb3Provider();
+      const provider = await getWeb3Provider();
       if (!provider) {
         console.error("web3Provider doesn't exist!");
         return null;

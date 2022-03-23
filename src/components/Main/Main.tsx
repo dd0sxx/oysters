@@ -1,15 +1,18 @@
 import { Contract } from "ethers";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
+import { Setter } from "../../helpers/types";
 import { Notification } from "../../notifications/Notification";
 import { notificationMessages } from "../../notifications/notificationMessages";
 import { AppStage, AppState } from "../../state/AppState";
-import { checkHowManyTokensLeft } from "../../wallet/checkHowManyTokensLeft";
+import { getHowManyTokensLeft } from "../../wallet/getHowManyTokensLeft";
 
 type WalletActionsAndContract = {
   connectWallet: () => Promise<void>;
   contract: Contract;
-  startMintingProcess: () => void;
+  startMintingProcess: (arg: {
+    setHowManyTokensLeft: Setter<number | null>;
+  }) => void;
 };
 
 const contentByAppStage: Record<
@@ -28,9 +31,11 @@ const contentByAppStage: Record<
         null,
       );
 
-      checkHowManyTokensLeft({ contract }).then(howManyTokensLeft =>
-        setHowManyTokensLeft(howManyTokensLeft),
-      );
+      useEffect(() => {
+        getHowManyTokensLeft({ contract }).then(howManyTokensLeft =>
+          setHowManyTokensLeft(howManyTokensLeft),
+        );
+      }, []);
 
       if (howManyTokensLeft === null) {
         return null;
@@ -39,7 +44,12 @@ const contentByAppStage: Record<
       return (
         <>
           <h1>{`${howManyTokensLeft} left...`}</h1>
-          <button className="button-under-header" onClick={startMintingProcess}>
+          <button
+            className="button-under-header"
+            onClick={() => {
+              startMintingProcess({ setHowManyTokensLeft });
+            }}
+          >
             Mint Tiramisu
           </button>
         </>
@@ -98,7 +108,9 @@ export const Main: FC<{
   connectWalletAndHandleResult: () => Promise<void>;
   contract: Contract;
   notifications: Notification[];
-  startMintingProcess: () => void;
+  startMintingProcess: (arg: {
+    setHowManyTokensLeft: Setter<number | null>;
+  }) => void;
 }> = ({
   appState,
   connectWalletAndHandleResult,

@@ -4,7 +4,7 @@ export const connectWallet = async (): Promise<{
   walletAddr: string;
 } | null> => {
   try {
-    const provider = getWeb3Provider();
+    const provider = await getWeb3Provider();
     if (!provider) {
       console.error("web3Provider doesn't exist!");
       return null;
@@ -12,7 +12,12 @@ export const connectWallet = async (): Promise<{
     /*
      * Fancy method to request access to account.
      */
-    await provider.send("eth_requestAccounts", []);
+    try {
+      await provider.send("eth_requestAccounts", []);
+    } catch (error) {
+      console.error(error);
+    }
+
     const signer = await provider.getSigner();
     return { walletAddr: await signer.getAddress() };
   } catch (error) {

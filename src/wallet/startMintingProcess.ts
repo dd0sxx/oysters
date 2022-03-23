@@ -1,5 +1,6 @@
 import { Contract } from "ethers";
 
+import { Setter } from "../helpers/types";
 import { addOrReplaceNotification } from "../notifications/addOrReplaceNotification";
 import { NotificationType } from "../notifications/Notification";
 import { NotificationsSetter } from "../notifications/NotificationsSetter";
@@ -13,8 +14,10 @@ import { mintNFT } from "./mintNFT";
 export const startMintingProcess = async ({
   setNotifications,
   contract,
+  setHowManyTokensLeft,
 }: {
   contract: Contract;
+  setHowManyTokensLeft: Setter<number | null>;
   setNotifications: NotificationsSetter;
 }): Promise<boolean> => {
   const notificationID: string = generateUUID();
@@ -33,7 +36,7 @@ export const startMintingProcess = async ({
     addOrReplaceNotification({
       newNotification: {
         id: notificationID,
-        overrideText: `Please connect to Ethereum ${getCorrectNetName()}`,
+        overrideText: `please connect to Ethereum ${getCorrectNetName()}`,
         type: NotificationType.Error,
       },
       setNotifications,
@@ -46,9 +49,13 @@ export const startMintingProcess = async ({
     setNotifications,
   });
 
-  return mintNFT({
+  const hasMintedSuccessfully = await mintNFT({
     contract,
     notificationID,
     setNotifications,
   });
+  if (hasMintedSuccessfully) {
+    setHowManyTokensLeft(oldVal => (oldVal ? oldVal - 1 : oldVal));
+  }
+  return hasMintedSuccessfully;
 };

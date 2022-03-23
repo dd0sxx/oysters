@@ -3,6 +3,7 @@ import React, { useState } from "react";
 
 import { Main } from "./components/Main/Main";
 import { SocialBar } from "./components/SocialBar/SocialBar";
+import { Setter } from "./helpers/types";
 import { addOrReplaceNotification } from "./notifications/addOrReplaceNotification";
 import { Notification, NotificationType } from "./notifications/Notification";
 import { AppStage, AppState } from "./state/AppState";
@@ -10,8 +11,12 @@ import { generateUUID } from "./utils/generateUUID";
 import { checkIfCanMint } from "./wallet/checkIfCanMint";
 import { connectWallet } from "./wallet/connectWallet";
 import { getContractThroughEthereumProvider } from "./wallet/getContractThroughEthereumProvider";
+import { getCorrectNetName } from "./wallet/getCorrectNetName";
 import { isCorrectNet } from "./wallet/isCorrectNet";
 import { startMintingProcess } from "./wallet/startMintingProcess";
+
+let _resetAppState = () => {};
+export const resetAppState = () => _resetAppState();
 
 export const App = () => {
   const [appState, setAppState] = useState<AppState>({
@@ -19,6 +24,9 @@ export const App = () => {
     stage: AppStage.disconnected,
   });
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  _resetAppState = () => {
+    setAppState({ contract: null, stage: AppStage.disconnected });
+  };
 
   const connectWalletAndHandleResult = async () => {
     if (!process.env.REACT_APP_CONTRACT_ADDRESS) {
@@ -29,7 +37,15 @@ export const App = () => {
 
     if (wallet) {
       if (!(await isCorrectNet())) {
-        alert("is not a correct net");
+        addOrReplaceNotification({
+          newNotification: {
+            id: generateUUID(),
+            overrideText: `please connect to Ethereum ${getCorrectNetName()}`,
+            type: NotificationType.Error,
+          },
+          setNotifications,
+        });
+        return;
       }
 
       const contract = await getContractThroughEthereumProvider();
@@ -66,9 +82,14 @@ export const App = () => {
       <Main
         appState={appState}
         connectWalletAndHandleResult={connectWalletAndHandleResult}
-        startMintingProcess={() =>
+        startMintingProcess={({
+          setHowManyTokensLeft,
+        }: {
+          setHowManyTokensLeft: Setter<number | null>;
+        }) =>
           startMintingProcess({
             contract: appState.contract as Contract,
+            setHowManyTokensLeft,
             setNotifications,
           })
         }

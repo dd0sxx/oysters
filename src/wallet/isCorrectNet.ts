@@ -3,7 +3,7 @@ import { getWeb3Provider } from "./getWeb3Provider";
 export const isCorrectNet = async (): Promise<boolean> => {
   const { REACT_APP_ENV } = process.env;
 
-  const provider = getWeb3Provider();
+  const provider = await getWeb3Provider();
   if (!provider) {
     return false;
   }

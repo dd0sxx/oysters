@@ -1,6 +1,6 @@
 import { Contract } from "ethers";
 
-export const checkHowManyTokensLeft = async ({
+export const getHowManyTokensLeft = async ({
   contract,
 }: {
   contract: Contract;

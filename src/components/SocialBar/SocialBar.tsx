@@ -1,22 +1,25 @@
 import { FC } from "react";
 
 export const socialLinksBySrc: { href: string; imgSrc: string }[] = [
-  // { href: "", imgSrc: "/imgs/opensea.svg" },
-  { href: "https://discord.gg/aXMDejtfK7", imgSrc: "/imgs/discord.svg" },
-  { href: "https://www.instagram.com/stillz/", imgSrc: "/imgs/instagram.svg" },
-  { href: "https://twitter.com/STAYSTILLZ", imgSrc: "/imgs/twitter.svg" },
+  { href: "", imgSrc: "/imgs/opensea.png" },
+  { href: "https://discord.gg/aXMDejtfK7", imgSrc: "/imgs/discord.png" },
+  { href: "https://www.instagram.com/stillz/", imgSrc: "/imgs/instagram.png" },
+  { href: "https://twitter.com/STAYSTILLZ", imgSrc: "/imgs/twitter.png" },
 ];
 
 export const SocialBar: FC = () => {
   return (
     <>
-      <div className="social-bar">
-        {socialLinksBySrc.map(({ href, imgSrc }) => (
-          <a key={imgSrc} href={href}>
-            <img src={imgSrc} />
-          </a>
-        ))}
+      <div className="wrapper">
+        <div className="social-bar">
+          {socialLinksBySrc.map(({ href, imgSrc }) => (
+            <a key={imgSrc} href={href}>
+              <img src={imgSrc} />
+            </a>
+          ))}
+        </div>
       </div>
+
       <style jsx>{`
         .social-bar :global(img) {
           width: 49px;
@@ -40,9 +43,18 @@ export const SocialBar: FC = () => {
         }
         @media (max-width: 599px) {
           .social-bar {
+            position: initial;
             top: initial;
+            right: initial;
             bottom: 26px;
             grid-column-gap: 8px;
+          }
+          .wrapper {
+            position: absolute;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            bottom: 26px;
           }
         }
       `}</style>

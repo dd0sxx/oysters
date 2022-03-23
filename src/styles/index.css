@@ -15,6 +15,7 @@ body {
     font-weight: 700;
     font-size: 16px;
     line-height: 18px;
+    text-align: center;
 }
 
 html {
@@ -61,6 +62,12 @@ h1 {
     font-weight: 700;
     line-height: 80px;
     letter-spacing: -0.05em;
+}
+@media (max-width: 599px) {
+    h1 {
+        font-size: 40px;
+        line-height: 46px;
+    }
 }
 
 button {
