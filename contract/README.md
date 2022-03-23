@@ -1,4 +1,4 @@
-# Silhouette Punks
+# Tiramisu
 
 ## Creating .env file
 Create an .env file based on `.env.example`.
