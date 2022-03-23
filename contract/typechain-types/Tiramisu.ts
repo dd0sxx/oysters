@@ -25,6 +25,7 @@ export interface TiramisuInterface extends utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getTokensLeft()": FunctionFragment;
     "isAddressEligibleForPremint()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "isPremintPhase()": FunctionFragment;
@@ -58,6 +59,10 @@ export interface TiramisuInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTokensLeft",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "isAddressEligibleForPremint",
@@ -120,6 +125,10 @@ export interface TiramisuInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTokensLeft",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -257,6 +266,8 @@ export interface Tiramisu extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    getTokensLeft(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     isAddressEligibleForPremint(overrides?: CallOverrides): Promise<[boolean]>;
 
     isApprovedForAll(
@@ -361,6 +372,8 @@ export interface Tiramisu extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  getTokensLeft(overrides?: CallOverrides): Promise<BigNumber>;
+
   isAddressEligibleForPremint(overrides?: CallOverrides): Promise<boolean>;
 
   isApprovedForAll(
@@ -458,6 +471,8 @@ export interface Tiramisu extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    getTokensLeft(overrides?: CallOverrides): Promise<BigNumber>;
 
     isAddressEligibleForPremint(overrides?: CallOverrides): Promise<boolean>;
 
@@ -593,6 +608,8 @@ export interface Tiramisu extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getTokensLeft(overrides?: CallOverrides): Promise<BigNumber>;
+
     isAddressEligibleForPremint(overrides?: CallOverrides): Promise<BigNumber>;
 
     isApprovedForAll(
@@ -700,6 +717,8 @@ export interface Tiramisu extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    getTokensLeft(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     isAddressEligibleForPremint(
       overrides?: CallOverrides

@@ -16,8 +16,8 @@ contract Tiramisu is ERC721, Ownable {
     bool private premintPhase = true;
     mapping (address => bool) private eligibleForPremint;
 
-    address private constant addr80 = 0x36c174b93D814c91909D5870bd063e228bbAf8c5;
-    address private constant addr20 = 0xc7E7747fa605633817C706377559e5f340A5276e;
+    address private constant addr80 = 0x95645e9fCfEe7882DA368963d5A460308df24DD6;
+    address private constant addr20 = 0x705a47eBC6fCE487a3C64A2dA64cE2E3B8b2EF55;
 
     constructor(string memory baseURI, address[] memory eligibleForPremintArr) ERC721('Tiramisu Recipe by STILLZ', 'TMISU') {
         _baseTokenURI = baseURI;
@@ -26,7 +26,7 @@ contract Tiramisu is ERC721, Ownable {
             eligibleForPremint[eligibleForPremintArr[i]] = true;
 
         uint mintIndex = _tokenSupply.current();
-        for (uint i; i < 30; i++) {
+        for (uint i; i < 10; i++) {
             _safeMint(addr80, mintIndex + i);
             _tokenSupply.increment();
         }
@@ -43,6 +43,7 @@ contract Tiramisu is ERC721, Ownable {
         require(mintIndex < MAX_SUPPLY, 'exceeds token supply');
         _safeMint(msg.sender, mintIndex);
         _tokenSupply.increment();
+        eligibleForPremint[msg.sender] = false;
     }
 
     function setBaseURI(string memory baseURI) public onlyOwner {
@@ -81,5 +82,9 @@ contract Tiramisu is ERC721, Ownable {
 
     function setIsPremintPhase(bool _isPremintPhase) public onlyOwner {
         premintPhase = _isPremintPhase;
+    }
+
+    function getTokensLeft() public view returns (uint256) {
+        return MAX_SUPPLY - _tokenSupply.current();
     }
 }

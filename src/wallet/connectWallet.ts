@@ -14,7 +14,6 @@ export const connectWallet = async (): Promise<{
      */
     await provider.send("eth_requestAccounts", []);
     const signer = await provider.getSigner();
-    console.log({ signer });
     return { walletAddr: await signer.getAddress() };
   } catch (error) {
     console.error(error);

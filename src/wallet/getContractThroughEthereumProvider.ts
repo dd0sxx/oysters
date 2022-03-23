@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 
-import SilhouettePunksTest from "../abi/development/SilhouettePunks.json";
-import SilhouettePunksProd from "../abi/production/SilhouettePunks.json";
+import TiramisuDev from "../abi/development/Tiramisu.json";
+import TiramisuProd from "../abi/production/Tiramisu.json";
 
 import { getWeb3Provider } from "./getWeb3Provider";
 
@@ -27,9 +27,9 @@ export const getContractThroughEthereumProvider =
 
       let abi: any;
       if (REACT_APP_ENV !== "production") {
-        abi = SilhouettePunksTest.abi;
+        abi = TiramisuDev.abi;
       } else {
-        abi = SilhouettePunksProd.abi;
+        abi = TiramisuProd.abi;
       }
 
       return new ethers.Contract(

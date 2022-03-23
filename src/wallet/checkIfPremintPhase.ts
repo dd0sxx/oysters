@@ -1,9 +1,9 @@
 import { Contract } from "ethers";
 
-export const checkIfCanMint = async ({
+export const checkIfPremintPhase = async ({
   contract,
 }: {
   contract: Contract;
 }): Promise<boolean> => {
-  return contract.isAddressEligibleForPremint();
+  return contract.isPremintPhase();
 };

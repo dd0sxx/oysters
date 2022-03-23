@@ -1,23 +1,50 @@
-import { FC } from "react";
+import { Contract } from "ethers";
+import { FC, useState } from "react";
 
+import { Notification } from "../../notifications/Notification";
+import { notificationMessages } from "../../notifications/notificationMessages";
 import { AppStage, AppState } from "../../state/AppState";
+import { checkHowManyTokensLeft } from "../../wallet/checkHowManyTokensLeft";
+
+type WalletActionsAndContract = {
+  connectWallet: () => Promise<void>;
+  contract: Contract;
+  startMintingProcess: () => void;
+};
 
 const contentByAppStage: Record<
   AppStage,
   {
-    BelowHeader: FC<{ connectWallet: () => Promise<void> }>;
-    Header: FC;
+    BelowHeader: FC<WalletActionsAndContract>;
+    Header: FC<WalletActionsAndContract>;
     className: string;
     imgSrc: string;
   }
 > = {
   [AppStage.connected]: {
-    BelowHeader: () => (
-      <div className="text-under-header">
-        the wallet you have connected isn’t on our premint list
-      </div>
-    ),
-    Header: () => <>{"432 left..."}</>,
+    BelowHeader: () => null,
+    Header: ({ startMintingProcess, contract }) => {
+      const [howManyTokensLeft, setHowManyTokensLeft] = useState<number | null>(
+        null,
+      );
+
+      checkHowManyTokensLeft({ contract }).then(howManyTokensLeft =>
+        setHowManyTokensLeft(howManyTokensLeft),
+      );
+
+      if (howManyTokensLeft === null) {
+        return null;
+      }
+
+      return (
+        <>
+          <h1>{`${howManyTokensLeft} left...`}</h1>
+          <button className="button-under-header" onClick={startMintingProcess}>
+            Mint Tiramisu
+          </button>
+        </>
+      );
+    },
     className: "connected",
     imgSrc: "/imgs/zap_multicolor_no-bg.gif",
   },
@@ -27,7 +54,7 @@ const contentByAppStage: Record<
         Connect Wallet
       </button>
     ),
-    Header: () => <>{"tiramisu recipe..."}</>,
+    Header: () => <h1>{"tiramisu recipe..."}</h1>,
     className: "disconnected",
     imgSrc: "/imgs/rainbow-EX.gif",
   },
@@ -37,7 +64,7 @@ const contentByAppStage: Record<
         the wallet you have connected isn’t on our premint list
       </div>
     ),
-    Header: () => <>{"sorry..."}</>,
+    Header: () => <h1>{"sorry..."}</h1>,
     className: "notOnPreMintList",
     imgSrc: "/imgs/rotten_no--bg.gif",
   },
@@ -69,7 +96,16 @@ const MainImg: FC<{ appState: AppState }> = ({ appState }) => {
 export const Main: FC<{
   appState: AppState;
   connectWalletAndHandleResult: () => Promise<void>;
-}> = ({ appState, connectWalletAndHandleResult }) => {
+  contract: Contract;
+  notifications: Notification[];
+  startMintingProcess: () => void;
+}> = ({
+  appState,
+  connectWalletAndHandleResult,
+  startMintingProcess,
+  notifications,
+  contract,
+}) => {
   const { BelowHeader, Header } = contentByAppStage[appState.stage];
 
   return (
@@ -77,10 +113,24 @@ export const Main: FC<{
       <div className="main-wrapper">
         <main>
           <MainImg appState={appState} />
-          <h1>
-            <Header />
-          </h1>
-          <BelowHeader connectWallet={connectWalletAndHandleResult} />
+          <Header
+            connectWallet={connectWalletAndHandleResult}
+            startMintingProcess={startMintingProcess}
+            contract={contract}
+          />
+          <BelowHeader
+            connectWallet={connectWalletAndHandleResult}
+            startMintingProcess={startMintingProcess}
+            contract={contract}
+          />
+          {notifications?.length > 0 && (
+            <div className="notification">
+              {notifications[notifications.length - 1].overrideText ||
+                notificationMessages[
+                  notifications[notifications.length - 1].type
+                ]}
+            </div>
+          )}
         </main>
       </div>
 
@@ -103,6 +153,10 @@ export const Main: FC<{
         }
         :global(.text-under-header) {
           margin-top: 28px;
+        }
+
+        .notification {
+          margin-top: 20px;
         }
       `}</style>
     </>

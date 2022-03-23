@@ -1,10 +1,10 @@
 import { FC } from "react";
 
 export const socialLinksBySrc: { href: string; imgSrc: string }[] = [
-  { href: "", imgSrc: "/imgs/opensea.svg" },
-  { href: "", imgSrc: "/imgs/discord.svg" },
-  { href: "", imgSrc: "/imgs/instagram.svg" },
-  { href: "", imgSrc: "/imgs/twitter.svg" },
+  // { href: "", imgSrc: "/imgs/opensea.svg" },
+  { href: "https://discord.gg/aXMDejtfK7", imgSrc: "/imgs/discord.svg" },
+  { href: "https://www.instagram.com/stillz/", imgSrc: "/imgs/instagram.svg" },
+  { href: "https://twitter.com/STAYSTILLZ", imgSrc: "/imgs/twitter.svg" },
 ];
 
 export const SocialBar: FC = () => {

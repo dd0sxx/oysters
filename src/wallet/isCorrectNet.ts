@@ -8,7 +8,6 @@ export const isCorrectNet = async (): Promise<boolean> => {
     return false;
   }
   const { chainId } = await provider.getNetwork();
-
   return (
     (REACT_APP_ENV === "production" && chainId === 1) ||
     (REACT_APP_ENV !== "production" && chainId === 4)

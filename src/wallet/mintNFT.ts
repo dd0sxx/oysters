@@ -1,86 +1,89 @@
+import { Decimal } from "decimal.js";
+import { Contract, ethers } from "ethers";
+
 import { addOrReplaceNotification } from "../notifications/addOrReplaceNotification";
 import { NotificationType } from "../notifications/Notification";
 import { NotificationsSetter } from "../notifications/NotificationsSetter";
-import { generateUUID } from "../utils/generateUUID";
 
-import { askContractToMintNFT } from "./askContractToMintNFT";
-import { connectWallet } from "./connectWallet";
+import { checkIfPremintPhase } from "./checkIfPremintPhase";
 import { getContractThroughEthereumProvider } from "./getContractThroughEthereumProvider";
-import { getCorrectNetName } from "./getCorrectNetName";
-import { isCorrectNet } from "./isCorrectNet";
-import { WalletAddr } from "./Wallet";
+import { getExplorerHref } from "./getExplorerHref";
 
-const isPositiveInteger = (str: string) => {
-  return /^([1-9]\d*)$/.test(str);
-};
+const tokenPriceDecimal = new Decimal("0.1");
 
 export const mintNFT = async ({
-  currentAccount,
-  tokensCount: tokensCountStr,
+  notificationID,
   setNotifications,
+  contract,
 }: {
-  currentAccount: WalletAddr;
-  setCurrentAccount: (acc: WalletAddr) => void;
-  setIsCorrectNet: (b: boolean) => void;
+  contract: Contract;
+  notificationID: string;
   setNotifications: NotificationsSetter;
-  tokensCount: string;
 }): Promise<boolean> => {
-  let acc: WalletAddr | undefined = currentAccount;
-
-  const notificationID: string = generateUUID();
-
-  if (!acc) {
-    acc = (await connectWallet())?.walletAddr;
-    if (!acc) {
-      addOrReplaceNotification({
-        newNotification: { id: notificationID, type: NotificationType.Error },
-        setNotifications,
-      });
-      return false;
-    }
+  const connectedContract = await getContractThroughEthereumProvider();
+  if (connectedContract === null) {
+    addOrReplaceNotification({
+      newNotification: { id: notificationID, type: NotificationType.Error },
+      setNotifications,
+    });
+    return false;
   }
 
-  const correctNet = await isCorrectNet();
-  if (!correctNet) {
+  const isPremintPhase = await checkIfPremintPhase({ contract });
+
+  const price = isPremintPhase ? "0" : tokenPriceDecimal.toString();
+
+  try {
+    const overrides = {
+      value: ethers.utils.parseEther(price), // ether in this case MUST be a string
+    };
+
+    //  Going to pop wallet now to pay gas...
+    const nftTxn = await connectedContract.mint(overrides);
+
+    const explorerHref = getExplorerHref({ transactionHash: nftTxn.hash });
+    if (!explorerHref) {
+      setNotifications([{ id: notificationID, type: NotificationType.Error }]);
+      return false;
+    }
+
+    addOrReplaceNotification({
+      newNotification: {
+        explorerHref,
+        id: notificationID,
+        type: NotificationType.MintPending,
+      },
+      setNotifications,
+    });
+
+    // Mining... please wait.
+    await nftTxn.wait();
+
+    addOrReplaceNotification({
+      newNotification: {
+        explorerHref,
+        id: notificationID,
+        type: NotificationType.MintSuccessful,
+      },
+      setNotifications,
+    });
+    return true;
+  } catch (error: any) {
+    console.log({ error });
+
     addOrReplaceNotification({
       newNotification: {
         id: notificationID,
-        overrideText: `Please connect to Ethereum ${getCorrectNetName()}`,
+        overrideText:
+          error.code === "INSUFFICIENT_FUNDS"
+            ? "insufficient funds"
+            : undefined,
         type: NotificationType.Error,
       },
       setNotifications,
     });
-    return false;
+    console.error(error);
   }
 
-  addOrReplaceNotification({
-    newNotification: { id: notificationID, type: NotificationType.MintPending },
-    setNotifications,
-  });
-
-  const connectedContract = await getContractThroughEthereumProvider();
-  if (!connectedContract) {
-    addOrReplaceNotification({
-      newNotification: { id: notificationID, type: NotificationType.Error },
-      setNotifications,
-    });
-    return false;
-  }
-
-  if (tokensCountStr.length > 0 && !isPositiveInteger(tokensCountStr)) {
-    console.error("only non-negative integers are allowed");
-    addOrReplaceNotification({
-      newNotification: { id: notificationID, type: NotificationType.Error },
-      setNotifications,
-    });
-    return false;
-  }
-
-  const tokensCount = tokensCountStr.length > 0 ? parseInt(tokensCountStr) : 1;
-
-  return askContractToMintNFT({
-    notificationID,
-    setNotifications,
-    tokensCount,
-  });
+  return false;
 };
