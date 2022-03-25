@@ -2,9 +2,7 @@
 const { override, addBabelPlugin } = require("customize-cra");
 const webpack = require("webpack");
 
-override(addBabelPlugin("styled-jsx/babel"));
-
-module.exports = function override(config) {
+const o = config => {
   const fallback = config.resolve.fallback || {};
   Object.assign(fallback, {
     assert: require.resolve("assert"),
@@ -27,3 +25,5 @@ module.exports = function override(config) {
 
   return config;
 };
+
+module.exports = override(o, addBabelPlugin("styled-jsx/babel"));

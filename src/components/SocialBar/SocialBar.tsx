@@ -1,10 +1,13 @@
 import { FC } from "react";
 
 export const socialLinksBySrc: { href: string; imgSrc: string }[] = [
-  { href: "", imgSrc: "/imgs/opensea.png" },
-  { href: "https://discord.gg/aXMDejtfK7", imgSrc: "/imgs/discord.png" },
-  { href: "https://www.instagram.com/stillz/", imgSrc: "/imgs/instagram.png" },
-  { href: "https://twitter.com/STAYSTILLZ", imgSrc: "/imgs/twitter.png" },
+  { href: "", imgSrc: "/imgs/opensea_logo.png" },
+  { href: "https://discord.gg/aXMDejtfK7", imgSrc: "/imgs/discord_logo.png" },
+  {
+    href: "https://www.instagram.com/stillz/",
+    imgSrc: "/imgs/instagram_logo.png",
+  },
+  { href: "https://twitter.com/STAYSTILLZ", imgSrc: "/imgs/twitter_logo.png" },
 ];
 
 export const SocialBar: FC = () => {
