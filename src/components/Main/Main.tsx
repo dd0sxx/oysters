@@ -90,6 +90,7 @@ const MainImg: FC<{ appState: AppState }> = ({ appState }) => {
       <style jsx>{`
         .connected {
           width: 266px;
+          margin: 0 0 -40px 0;
         }
         .disconnected {
           width: 273px;
@@ -97,6 +98,7 @@ const MainImg: FC<{ appState: AppState }> = ({ appState }) => {
         }
         .notOnPreMintList {
           width: 288px;
+          margin: 0 0 -63px;
         }
       `}</style>
     </>
@@ -161,7 +163,7 @@ export const Main: FC<{
         }
 
         :global(.button-under-header) {
-          margin-top: 25px;
+          margin-top: 20px;
         }
         :global(.text-under-header) {
           margin-top: 28px;
