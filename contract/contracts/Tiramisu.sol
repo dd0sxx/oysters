@@ -107,7 +107,7 @@ contract Tiramisu is ERC721, Ownable {
         require(_premintPhase, 'not a premint phase');
         require(_verify(_leaf(msg.sender), proof), "invalid merkle proof");
         bytes32 hash = keccak256(abi.encodePacked(msg.sender));
-        require(!_claimedWL[hash], "claimed");
+        require(!_claimedWL[hash], "already claimed");
         _claimedWL[hash] = true;
         issueToken(msg.sender);
     }

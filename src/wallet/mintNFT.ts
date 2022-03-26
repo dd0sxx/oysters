@@ -1,4 +1,3 @@
-import { Decimal } from "decimal.js";
 import { Contract, ethers } from "ethers";
 
 import { addOrReplaceNotification } from "../notifications/addOrReplaceNotification";
@@ -6,10 +5,10 @@ import { NotificationType } from "../notifications/Notification";
 import { NotificationsSetter } from "../notifications/NotificationsSetter";
 
 import { checkIfPremintPhase } from "./checkIfPremintPhase";
-import { getContractThroughEthereumProvider } from "./getContractThroughEthereumProvider";
 import { getExplorerHref } from "./getExplorerHref";
+import { redeemTokenForWhitelisted } from "./redeemTokenForWhitelisted";
 
-const tokenPriceDecimal = new Decimal("0.1");
+const tokenPriceDecimal = "0.1";
 
 export const mintNFT = async ({
   notificationID,
@@ -20,8 +19,7 @@ export const mintNFT = async ({
   notificationID: string;
   setNotifications: NotificationsSetter;
 }): Promise<boolean> => {
-  const connectedContract = await getContractThroughEthereumProvider();
-  if (connectedContract === null) {
+  if (contract === null) {
     addOrReplaceNotification({
       newNotification: { id: notificationID, type: NotificationType.Error },
       setNotifications,
@@ -31,15 +29,16 @@ export const mintNFT = async ({
 
   const isPremintPhase = await checkIfPremintPhase({ contract });
 
-  const price = isPremintPhase ? "0" : tokenPriceDecimal.toString();
-
   try {
-    const overrides = {
-      value: ethers.utils.parseEther(price), // ether in this case MUST be a string
-    };
-
     //  Going to pop wallet now to pay gas...
-    const nftTxn = await connectedContract.mint(overrides);
+    let nftTxn: any;
+    if (isPremintPhase) {
+      nftTxn = await redeemTokenForWhitelisted({ contract });
+    } else {
+      nftTxn = await contract.mint({
+        value: ethers.utils.parseEther(tokenPriceDecimal), // ether in this case MUST be a string
+      });
+    }
 
     const explorerHref = getExplorerHref({ transactionHash: nftTxn.hash });
     if (!explorerHref) {
@@ -69,8 +68,6 @@ export const mintNFT = async ({
     });
     return true;
   } catch (error: any) {
-    console.log({ error });
-
     addOrReplaceNotification({
       newNotification: {
         id: notificationID,

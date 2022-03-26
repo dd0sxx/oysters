@@ -69,7 +69,7 @@
     "lint": "eslint --cache .",
     "lint:fix": "eslint --fix --cache .",
     "kill:win": "powershell \"Get-Process | Where Name –Like “node*” | Stop-Process\"",
-    "typechain": "typechain --target=ethers-v5 \"./src/abi/production/**/*.json\" --out-dir \"./src/types/eth\""
+    "typechain": "typechain --target=ethers-v5 \\\"src/artifacts/production/**/*.json\\\" --out-dir \\\"./src/types/eth\\\""
   },
   "eslintConfig": {
     "extends": [

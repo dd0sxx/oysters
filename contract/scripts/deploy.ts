@@ -11,6 +11,7 @@ const testAddressesRaw = [
   "0xbeefbeefbeefbeefbeefbeefbeefbeefbeefbeef",
   "0xfeedfeedfeedfeedfeedfeedfeedfeedfeedfeed",
   "0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+  "0x7Eb696df980734DD592EBDd9dfC39F189aDc5456",
   "0x36c174b93D814c91909D5870bd063e228bbAf8c5",
   "0xc7E7747fa605633817C706377559e5f340A5276e"
 ];

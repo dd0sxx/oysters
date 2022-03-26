@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 
-import TiramisuDev from "../abi/development/Tiramisu.json";
-import TiramisuProd from "../abi/production/Tiramisu.json";
+import TiramisuDev from "../artifacts/development/Tiramisu.json";
+import TiramisuProd from "../artifacts/production/Tiramisu.json";
 
 import { getWeb3Provider } from "./getWeb3Provider";
 
@@ -23,7 +23,7 @@ export const getContractThroughEthereumProvider =
         return null;
       }
 
-      const signer = provider.getSigner();
+      const signer = await provider.getSigner();
 
       let abi: any;
       if (REACT_APP_ENV !== "production") {
