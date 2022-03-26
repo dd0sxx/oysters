@@ -26,18 +26,19 @@ export interface TiramisuInterface extends utils.Interface {
     "balanceOf(address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getTokensLeft()": FunctionFragment;
-    "isAddressEligibleForPremint()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "isPremintPhase()": FunctionFragment;
     "mint()": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
+    "redeem(bytes32[])": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setBaseURI(string)": FunctionFragment;
     "setIsPremintPhase(bool)": FunctionFragment;
+    "setMerkleRoot(bytes32)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
@@ -65,10 +66,6 @@ export interface TiramisuInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "isAddressEligibleForPremint",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
@@ -83,6 +80,7 @@ export interface TiramisuInterface extends utils.Interface {
     functionFragment: "ownerOf",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "redeem", values: [BytesLike[]]): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
@@ -99,6 +97,10 @@ export interface TiramisuInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "setIsPremintPhase",
     values: [boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setMerkleRoot",
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -132,10 +134,6 @@ export interface TiramisuInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "isAddressEligibleForPremint",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
@@ -147,6 +145,7 @@ export interface TiramisuInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "redeem", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
@@ -162,6 +161,10 @@ export interface TiramisuInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "setBaseURI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setIsPremintPhase",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setMerkleRoot",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -249,7 +252,7 @@ export interface Tiramisu extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    MAX_SUPPLY(overrides?: CallOverrides): Promise<[BigNumber]>;
+    MAX_SUPPLY(overrides?: CallOverrides): Promise<[number]>;
 
     PRICE(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -266,9 +269,7 @@ export interface Tiramisu extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    getTokensLeft(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    isAddressEligibleForPremint(overrides?: CallOverrides): Promise<[boolean]>;
+    getTokensLeft(overrides?: CallOverrides): Promise<[number]>;
 
     isApprovedForAll(
       owner: string,
@@ -290,6 +291,11 @@ export interface Tiramisu extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    redeem(
+      proof: BytesLike[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -326,6 +332,11 @@ export interface Tiramisu extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setMerkleRoot(
+      newRoot: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -355,7 +366,7 @@ export interface Tiramisu extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  MAX_SUPPLY(overrides?: CallOverrides): Promise<BigNumber>;
+  MAX_SUPPLY(overrides?: CallOverrides): Promise<number>;
 
   PRICE(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -372,9 +383,7 @@ export interface Tiramisu extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  getTokensLeft(overrides?: CallOverrides): Promise<BigNumber>;
-
-  isAddressEligibleForPremint(overrides?: CallOverrides): Promise<boolean>;
+  getTokensLeft(overrides?: CallOverrides): Promise<number>;
 
   isApprovedForAll(
     owner: string,
@@ -393,6 +402,11 @@ export interface Tiramisu extends BaseContract {
   owner(overrides?: CallOverrides): Promise<string>;
 
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+  redeem(
+    proof: BytesLike[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   renounceOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -429,6 +443,11 @@ export interface Tiramisu extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setMerkleRoot(
+    newRoot: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   supportsInterface(
     interfaceId: BytesLike,
     overrides?: CallOverrides
@@ -455,7 +474,7 @@ export interface Tiramisu extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    MAX_SUPPLY(overrides?: CallOverrides): Promise<BigNumber>;
+    MAX_SUPPLY(overrides?: CallOverrides): Promise<number>;
 
     PRICE(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -472,9 +491,7 @@ export interface Tiramisu extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    getTokensLeft(overrides?: CallOverrides): Promise<BigNumber>;
-
-    isAddressEligibleForPremint(overrides?: CallOverrides): Promise<boolean>;
+    getTokensLeft(overrides?: CallOverrides): Promise<number>;
 
     isApprovedForAll(
       owner: string,
@@ -491,6 +508,8 @@ export interface Tiramisu extends BaseContract {
     owner(overrides?: CallOverrides): Promise<string>;
 
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+    redeem(proof: BytesLike[], overrides?: CallOverrides): Promise<void>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
@@ -521,6 +540,8 @@ export interface Tiramisu extends BaseContract {
       _isPremintPhase: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    setMerkleRoot(newRoot: BytesLike, overrides?: CallOverrides): Promise<void>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -610,8 +631,6 @@ export interface Tiramisu extends BaseContract {
 
     getTokensLeft(overrides?: CallOverrides): Promise<BigNumber>;
 
-    isAddressEligibleForPremint(overrides?: CallOverrides): Promise<BigNumber>;
-
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -631,6 +650,11 @@ export interface Tiramisu extends BaseContract {
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    redeem(
+      proof: BytesLike[],
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     renounceOwnership(
@@ -665,6 +689,11 @@ export interface Tiramisu extends BaseContract {
 
     setIsPremintPhase(
       _isPremintPhase: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setMerkleRoot(
+      newRoot: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -720,10 +749,6 @@ export interface Tiramisu extends BaseContract {
 
     getTokensLeft(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    isAddressEligibleForPremint(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -743,6 +768,11 @@ export interface Tiramisu extends BaseContract {
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    redeem(
+      proof: BytesLike[],
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     renounceOwnership(
@@ -777,6 +807,11 @@ export interface Tiramisu extends BaseContract {
 
     setIsPremintPhase(
       _isPremintPhase: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setMerkleRoot(
+      newRoot: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

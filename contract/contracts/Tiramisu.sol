@@ -1,4 +1,5 @@
-pragma solidity ^0.8.0;
+//SPDX-License-Identifier: Unlicense
+pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -18,7 +19,7 @@ contract Tiramisu is ERC721, Ownable {
     address private constant ADDR_80 = 0x95645e9fCfEe7882DA368963d5A460308df24DD6;
     address private constant ADDR_20 = 0x705a47eBC6fCE487a3C64A2dA64cE2E3B8b2EF55;
 
-    constructor(string memory baseURI, bytes32 _root) ERC721('Tiramisu Recipe by STILLZ', 'TMISU') {
+    constructor(string memory baseURI, bytes32 initialRoot) ERC721('Tiramisu Recipe by STILLZ', 'TMISU') {
         _baseTokenURI = baseURI;
 
         uint16 mintIndex = _tokenSupply;
@@ -27,7 +28,7 @@ contract Tiramisu is ERC721, Ownable {
             _safeMint(ADDR_80, mintIndex + i);
         }
 
-        setMerkleRoot(_root);
+        setMerkleRoot(initialRoot);
     }
 
     /// @dev minting tokens after the premint phase
@@ -89,8 +90,8 @@ contract Tiramisu is ERC721, Ownable {
     }
 
 
-    function setMerkleRoot(bytes32 _root) public onlyOwner {
-        root = _root;
+    function setMerkleRoot(bytes32 newRoot) public onlyOwner {
+        _root = newRoot;
     }
 
     function _leaf(address account) private pure returns (bytes32) {
@@ -98,11 +99,11 @@ contract Tiramisu is ERC721, Ownable {
     }
 
     function _verify(bytes32 leaf, bytes32[] memory proof) private view returns (bool) {
-        return MerkleProof.verify(proof, root, leaf);
+        return MerkleProof.verify(proof, _root, leaf);
     }
 
     /// @dev allows whitelisted users to claim their tokens during the premint phase
-    function redeem(bytes32[] calldata proof) {
+    function redeem(bytes32[] calldata proof) external {
         require(_premintPhase, 'not a premint phase');
         require(_verify(_leaf(msg.sender), proof), "invalid merkle proof");
         bytes32 hash = keccak256(abi.encodePacked(msg.sender));

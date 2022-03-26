@@ -4,6 +4,18 @@
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
 import { ethers } from "hardhat";
+import keccak256 from 'keccak256';
+import {MerkleTree} from 'merkletreejs';
+
+const testAddressesRaw = [
+  "0xbeefbeefbeefbeefbeefbeefbeefbeefbeefbeef",
+  "0xfeedfeedfeedfeedfeedfeedfeedfeedfeedfeed",
+  "0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+  "0x36c174b93D814c91909D5870bd063e228bbAf8c5",
+  "0xc7E7747fa605633817C706377559e5f340A5276e"
+];
+const leaves = testAddressesRaw.map((x) => keccak256(x));
+const merkleTree = new MerkleTree(leaves, keccak256, { sortPairs: true });
 
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
@@ -22,7 +34,7 @@ async function main() {
   const contractFactory = await ethers.getContractFactory("Tiramisu");
   console.log('0')
 
-  const contract = await contractFactory.deploy("", ["0x36c174b93D814c91909D5870bd063e228bbAf8c5"]);
+  const contract = await contractFactory.deploy("", merkleTree.getHexRoot());
   console.log('1')
 
   await contract.deployed()
