@@ -1,49 +1,46 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Tiramisu is ERC721, Ownable {
     using Strings for uint256;
-    using Counters for Counters.Counter;
 
     string private _baseTokenURI;
-    Counters.Counter private _tokenSupply;
-    uint public constant MAX_SUPPLY = 1000;
-    uint256 public constant PRICE = 0.1 ether;
+    uint16 private _nextTokenIdx;
+    bool private _premintPhase = true;
+    mapping (address => bool) private _eligibleForPremint;
 
-    bool private premintPhase = true;
-    mapping (address => bool) private eligibleForPremint;
-
-    address private constant addr80 = 0x95645e9fCfEe7882DA368963d5A460308df24DD6;
-    address private constant addr20 = 0x705a47eBC6fCE487a3C64A2dA64cE2E3B8b2EF55;
+    uint16 public constant MAX_SUPPLY = 1000;
+    uint64 public constant PRICE = 0.1 ether;
+    address private constant ADDR_80 = 0x95645e9fCfEe7882DA368963d5A460308df24DD6;
+    address private constant ADDR_20 = 0x705a47eBC6fCE487a3C64A2dA64cE2E3B8b2EF55;
 
     constructor(string memory baseURI, address[] memory eligibleForPremintArr) ERC721('Tiramisu Recipe by STILLZ', 'TMISU') {
         _baseTokenURI = baseURI;
 
-        for (uint256 i = 0; i < eligibleForPremintArr.length; i++)
-            eligibleForPremint[eligibleForPremintArr[i]] = true;
+        for (uint16 i = 0; i < eligibleForPremintArr.length; i++)
+            _eligibleForPremint[eligibleForPremintArr[i]] = true;
 
-        uint mintIndex = _tokenSupply.current();
-        for (uint i; i < 10; i++) {
-            _safeMint(addr80, mintIndex + i);
-            _tokenSupply.increment();
+        uint16 mintIndex = _nextTokenIdx;
+        for (uint16 i; i < 10; i++) {
+            incrementNextTokenIdx();
+            _safeMint(ADDR_80, mintIndex + i);
         }
     }
 
     function mint() external payable {
-        if (premintPhase) {
+        if (_premintPhase) {
             require(isAddressEligibleForPremint(), 'address ineligible for preminting');
         } else {
             require(msg.value == PRICE, 'incorrect ether amount supplied');
         }
 
-        uint mintIndex = _tokenSupply.current();
+        uint16 mintIndex = _nextTokenIdx;
         require(mintIndex < MAX_SUPPLY, 'exceeds token supply');
+        incrementNextTokenIdx();
+        _eligibleForPremint[msg.sender] = false;
         _safeMint(msg.sender, mintIndex);
-        _tokenSupply.increment();
-        eligibleForPremint[msg.sender] = false;
     }
 
     function setBaseURI(string memory baseURI) public onlyOwner {
@@ -58,11 +55,11 @@ contract Tiramisu is ERC721, Ownable {
     }
 
     function isAddressEligibleForPremint() public view returns (bool) {
-        return eligibleForPremint[msg.sender];
+        return _eligibleForPremint[msg.sender];
     }
 
     function isPremintPhase() public view returns (bool) {
-        return premintPhase;
+        return _premintPhase;
     }
 
     function isApprovedForAll(address owner, address operator) public view override returns (bool) {
@@ -75,16 +72,22 @@ contract Tiramisu is ERC721, Ownable {
     function withdraw() public onlyOwner {
         uint256 balance = address(this).balance;
         require(balance > 0);
-        (bool status1,) = addr80.call{value : (balance * 8) / 10}("");
-        (bool status2,) = addr20.call{value : (balance * 2) / 10}("");
+        (bool status1,) = ADDR_80.call{value : (balance * 8) / 10}("");
+        (bool status2,) = ADDR_20.call{value : (balance * 2) / 10}("");
         require(status1 == true && status2 == true, 'withdraw failed');
     }
 
     function setIsPremintPhase(bool _isPremintPhase) public onlyOwner {
-        premintPhase = _isPremintPhase;
+        _premintPhase = _isPremintPhase;
     }
 
-    function getTokensLeft() public view returns (uint256) {
-        return MAX_SUPPLY - _tokenSupply.current();
+    function getTokensLeft() public view returns (uint16) {
+        return MAX_SUPPLY - _nextTokenIdx;
+    }
+
+    function incrementNextTokenIdx() internal {
+        unchecked {
+            _nextTokenIdx += 1;
+        }
     }
 }
