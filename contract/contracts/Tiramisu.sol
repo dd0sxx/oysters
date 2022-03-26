@@ -7,7 +7,7 @@ contract Tiramisu is ERC721, Ownable {
     using Strings for uint256;
 
     string private _baseTokenURI;
-    uint16 private _nextTokenIdx;
+    uint16 private _tokenSupply;
     bool private _premintPhase = true;
     mapping (address => bool) private _eligibleForPremint;
 
@@ -22,9 +22,9 @@ contract Tiramisu is ERC721, Ownable {
         for (uint16 i = 0; i < eligibleForPremintArr.length; i++)
             _eligibleForPremint[eligibleForPremintArr[i]] = true;
 
-        uint16 mintIndex = _nextTokenIdx;
+        uint16 mintIndex = _tokenSupply;
         for (uint16 i; i < 10; i++) {
-            incrementNextTokenIdx();
+            incrementTokenSupply();
             _safeMint(ADDR_80, mintIndex + i);
         }
     }
@@ -36,9 +36,9 @@ contract Tiramisu is ERC721, Ownable {
             require(msg.value == PRICE, 'incorrect ether amount supplied');
         }
 
-        uint16 mintIndex = _nextTokenIdx;
+        uint16 mintIndex = _tokenSupply;
         require(mintIndex < MAX_SUPPLY, 'exceeds token supply');
-        incrementNextTokenIdx();
+        incrementTokenSupply();
         _eligibleForPremint[msg.sender] = false;
         _safeMint(msg.sender, mintIndex);
     }
@@ -82,12 +82,23 @@ contract Tiramisu is ERC721, Ownable {
     }
 
     function getTokensLeft() public view returns (uint16) {
-        return MAX_SUPPLY - _nextTokenIdx;
+        return MAX_SUPPLY - _tokenSupply;
     }
 
-    function incrementNextTokenIdx() internal {
+    function incrementTokenSupply() internal {
         unchecked {
-            _nextTokenIdx += 1;
+            _tokenSupply += 1;
         }
+    }
+
+    /// @dev allows whitelisted users to claim their guarenteed token
+    function redeem(bytes32[] calldata proof) external payable {
+        require(_verify(_leaf(msg.sender), proof), "Invalid merkle proof");
+        require(!toggleAuction, "use `mintAuction`");
+        require(msg.value == mintPrice, "incorrect ether sent");
+        bytes32 hash = keccak256(abi.encodePacked(msg.sender,indexWL));
+        require(!claimedWL[hash], "claimed");
+        claimedWL[hash] = true;
+        issueToken(msg.sender);
     }
 }
