@@ -34,6 +34,7 @@ contract Tiramisu is ERC721, Ownable {
     /// @dev minting tokens after the premint phase
     function mint() external payable {
         require(!_premintPhase, 'premint phase');
+        require(msg.value == PRICE, 'incorrect ether amount supplied');
         issueToken(msg.sender);
     }
 
