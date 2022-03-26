@@ -68,13 +68,18 @@ export const mintNFT = async ({
     });
     return true;
   } catch (error: any) {
+    let errorText: string | undefined = undefined;
+    if (error.code === "INSUFFICIENT_FUNDS") {
+      errorText = "insufficient funds";
+    }
+    if (error.error?.message === "execution reverted: already claimed") {
+      errorText = "only one token per wallet allowed in the premint phase";
+    }
+
     addOrReplaceNotification({
       newNotification: {
         id: notificationID,
-        overrideText:
-          error.code === "INSUFFICIENT_FUNDS"
-            ? "insufficient funds"
-            : undefined,
+        overrideText: errorText,
         type: NotificationType.Error,
       },
       setNotifications,
