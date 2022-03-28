@@ -15,8 +15,9 @@ import { getCorrectNetName } from "./wallet/getCorrectNetName";
 import { isCorrectNet } from "./wallet/isCorrectNet";
 import { startMintingProcess } from "./wallet/startMintingProcess";
 
-let _resetAppState = () => {};
-export const resetAppState = () => _resetAppState();
+let _resetState = (_notifications?: Notification[]) => {};
+export const resetAppState = (notifications?: Notification[]) =>
+  _resetState(notifications);
 
 export const App = () => {
   const [appState, setAppState] = useState<AppState>({
@@ -24,8 +25,9 @@ export const App = () => {
     stage: AppStage.disconnected,
   });
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  _resetAppState = () => {
+  _resetState = (notifications?: Notification[]) => {
     setAppState({ contract: null, stage: AppStage.disconnected });
+    setNotifications(notifications || []);
   };
 
   const connectWalletAndHandleResult = async () => {
@@ -66,6 +68,7 @@ export const App = () => {
           contract,
           stage: AppStage.connected,
         }));
+        setNotifications([]);
         return;
       }
       setAppState(oldVal => ({

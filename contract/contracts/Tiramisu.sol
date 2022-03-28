@@ -11,7 +11,7 @@ contract Tiramisu is ERC721, Ownable {
     string private _baseTokenURI;
     uint16 private _tokenSupply;
     bool private _premintPhase = true;
-    bytes32 private _root; // merkle root set in initializer
+    bytes32 private _root; // merkle root set in constructor
     mapping(bytes32 => bool) private _claimedWL; // stores addresses that have claimed whitelisted tokens
 
     uint16 public constant MAX_SUPPLY = 1000;
