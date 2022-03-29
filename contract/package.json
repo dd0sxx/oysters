@@ -8,6 +8,7 @@
     "compile": "npx hardhat compile",
     "deploy:local": "npx hardhat run scripts/deploy.ts",
     "deploy:rinkeby": "npx hardhat run scripts/deploy.ts --network rinkeby",
+    "switch-phase:rinkeby": "npx hardhat run scripts/switchPhase.ts --network rinkeby",
     "lint:fix": "eslint --fix --cache ./test/** --no-ignore",
     "test": "npx hardhat test"
   },

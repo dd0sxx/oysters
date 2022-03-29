@@ -271,7 +271,9 @@ describe("Token contract", function () {
       let balance = await hardhatToken.balanceOf(addr1.address);
       expect(balance).to.equal(1);
 
+      expect(await hardhatToken.premintPhase()).equal(true);
       await hardhatToken.connect(owner).setIsPremintPhase(false);
+      expect(await hardhatToken.premintPhase()).equal(false);
 
       await hardhatToken.connect(addr1).mint({ value: MINTING_PRICE });
 
