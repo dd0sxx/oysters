@@ -8,6 +8,6 @@
     "declaration": true
   },
   "include": ["./scripts",
-    "./test/common.test", "./typechain"],
+    "./test/index.test", "./typechain"],
   "files": ["./hardhat.config.ts"]
 }
