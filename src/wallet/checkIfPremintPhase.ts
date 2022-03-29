@@ -5,5 +5,5 @@ export const checkIfPremintPhase = async ({
 }: {
   contract: Contract;
 }): Promise<boolean> => {
-  return contract.isPremintPhase();
+  return contract.premintPhase();
 };
