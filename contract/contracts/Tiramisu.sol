@@ -15,7 +15,7 @@ contract Tiramisu is ERC721, Ownable {
     mapping(address => bool) public claimedWL; // stores addresses that have claimed whitelisted tokens
 
     uint16 public constant MAX_SUPPLY = 1000;
-    uint64 public constant PRICE = 0.1 ether;
+    uint64 public constant PRICE = 0.05 ether;
     address public constant ADDR_80 = 0x95645e9fCfEe7882DA368963d5A460308df24DD6;
     address public constant ADDR_20 = 0x705a47eBC6fCE487a3C64A2dA64cE2E3B8b2EF55;
 

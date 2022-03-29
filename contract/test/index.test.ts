@@ -14,7 +14,7 @@ import { Tiramisu } from "../typechain-types/Tiramisu";
 const TOKENS_COUNT = 1000;
 const TOKENS_FOR_ADDR_80_COUNT = 10;
 const TOKENS_AVAILABLE_COUNT = TOKENS_COUNT - TOKENS_FOR_ADDR_80_COUNT;
-const MINTING_PRICE: BigNumber = ethers.utils.parseEther("0.1");
+const MINTING_PRICE: BigNumber = ethers.utils.parseEther("0.05");
 
 const ADDR_80 = "0x95645e9fCfEe7882DA368963d5A460308df24DD6";
 const ADDR_20 = "0x705a47eBC6fCE487a3C64A2dA64cE2E3B8b2EF55";
