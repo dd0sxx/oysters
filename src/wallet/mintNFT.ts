@@ -8,7 +8,7 @@ import { checkIfPremintPhase } from "./checkIfPremintPhase";
 import { getExplorerHref } from "./getExplorerHref";
 import { redeemTokenForWhitelisted } from "./redeemTokenForWhitelisted";
 
-const tokenPriceDecimal = "0.1";
+const tokenPriceDecimal = "0.05";
 
 export const mintNFT = async ({
   notificationID,
