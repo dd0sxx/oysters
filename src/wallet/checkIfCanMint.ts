@@ -16,6 +16,12 @@ export const checkIfCanMint = async ({
 
   const userWalletAddress = await contract.signer.getAddress();
 
+  console.log(
+    premintAddresses,
+    userWalletAddress,
+    premintAddresses.includes(userWalletAddress),
+  );
+
   return premintAddresses
     .map(addr => addr.toLowerCase())
     .includes(userWalletAddress?.toLowerCase());
