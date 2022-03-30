@@ -499,8 +499,6 @@ const prodAddresses = [
   "0xdf56121c11286d9a6ebd6971656c9d1d55784737",
   "0x4196eacf4315519555cb14ca8872fdc22bcd777a",
   "0x95645e9fcfee7882da368963d5a460308df24dd6",
-  "0x36c174b93D814c91909D5870bd063e228bbAf8c5",
-  "0x7Eb696df980734DD592EBDd9dfC39F189aDc5456",
 ];
 
 export const premintAddresses = prodAddresses;
