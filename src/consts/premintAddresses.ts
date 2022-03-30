@@ -1,12 +1,3 @@
-const devAddresses = [
-  "0xbeefbeefbeefbeefbeefbeefbeefbeefbeefbeef",
-  "0xfeedfeedfeedfeedfeedfeedfeedfeedfeedfeed",
-  "0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
-  "0x7Eb696df980734DD592EBDd9dfC39F189aDc5456",
-  "0x36c174b93D814c91909D5870bd063e228bbAf8c5",
-  "0xc7E7747fa605633817C706377559e5f340A5276e",
-];
-
 const prodAddresses = [
   "0x8e9e8ca44a9858dc7c38871fcffc8bba5d294f9d",
   "0x1610ab94dfc63ac9cff28ba18a20d2dab5be101b",
@@ -510,5 +501,4 @@ const prodAddresses = [
   "0x95645e9fcfee7882da368963d5a460308df24dd6",
 ];
 
-export const premintAddresses =
-  process.env.REACT_APP_ENV !== "production" ? devAddresses : prodAddresses;
+export const premintAddresses = prodAddresses;
