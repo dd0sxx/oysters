@@ -3,23 +3,20 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
-contract Tiramisu is ERC721, Ownable {
+contract OYSTER is ERC721, Ownable {
     using Strings for uint256;
 
     string public baseTokenURI;
     uint16 public tokenSupply;
-    bool public premintPhase = true;
-    bytes32 public root; // merkle root set in constructor
-    mapping(address => bool) public claimedWL; // stores addresses that have claimed whitelisted tokens
+    mapping(address => uint8) public claimedWL; // stores addresses that have claimed whitelisted tokens
 
-    uint16 public constant MAX_SUPPLY = 1000;
-    uint64 public constant PRICE = 0.05 ether;
+    uint16 public constant MAX_SUPPLY = 500;
+    uint64 public constant PRICE = 0.2 ether;
     address public constant ADDR_80 = 0x95645e9fCfEe7882DA368963d5A460308df24DD6;
-    address public constant ADDR_20 = 0x705a47eBC6fCE487a3C64A2dA64cE2E3B8b2EF55;
+    address public constant ADDR_20 = 0xA965b5501FbB71DFADFcab538b2d8955A3C19746;
 
-    constructor(string memory baseURI, bytes32 initialRoot) ERC721('Tiramisu Recipe by STILLZ', 'TMISU') {
+    constructor(string memory baseURI) ERC721('OYSTER', 'OYSTER') {
         baseTokenURI = baseURI;
 
         uint16 mintIndex = tokenSupply;
@@ -28,15 +25,8 @@ contract Tiramisu is ERC721, Ownable {
             _safeMint(ADDR_80, mintIndex + i);
         }
 
-        setMerkleRoot(initialRoot);
     }
 
-    /// @dev minting tokens after the premint phase
-    function mint() external payable {
-        require(!premintPhase, 'premint phase');
-        require(msg.value == PRICE, 'incorrect ether amount supplied');
-        issueToken(msg.sender);
-    }
 
     /// @dev issues token to recipient
     function issueToken(address recipient) private {
@@ -57,23 +47,12 @@ contract Tiramisu is ERC721, Ownable {
         return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString(), json)) : "";
     }
 
-    function isApprovedForAll(address owner, address operator) public view override returns (bool) {
-        return (operator == 0x7Be8076f4EA4A4AD08075C2508e481d6C946D12b) ?
-        true
-        :
-        super.isApprovedForAll(owner, operator);
-    }
-
     function withdraw() public onlyOwner {
         uint256 balance = address(this).balance;
         require(balance > 0);
         (bool status1,) = ADDR_80.call{value : (balance * 8) / 10}("");
         (bool status2,) = ADDR_20.call{value : (balance * 2) / 10}("");
         require(status1 == true && status2 == true, 'withdraw failed');
-    }
-
-    function setIsPremintPhase(bool _isPremintPhase) public onlyOwner {
-        premintPhase = _isPremintPhase;
     }
 
     function getTokensLeft() public view returns (uint16) {
@@ -87,24 +66,13 @@ contract Tiramisu is ERC721, Ownable {
     }
 
 
-    function setMerkleRoot(bytes32 newRoot) public onlyOwner {
-        root = newRoot;
-    }
-
-    function _leaf(address account) private pure returns (bytes32) {
-        return keccak256(abi.encodePacked(account));
-    }
-
-    function _verify(bytes32 leaf, bytes32[] memory proof) private view returns (bool) {
-        return MerkleProof.verify(proof, root, leaf);
-    }
-
     /// @dev allows whitelisted users to claim their tokens during the premint phase
-    function redeem(bytes32[] calldata proof) external {
-        require(premintPhase, 'not a premint phase');
-        require(_verify(_leaf(msg.sender), proof), "invalid merkle proof");
-        require(!claimedWL[msg.sender], "already claimed");
-        claimedWL[msg.sender] = true;
+    function redeem(uint8 amount) external payable {
+        require(amount <= 10 && amount > 0, "no greater than 10");
+         require(msg.value == PRICE, 'incorrect ether amount supplied');
+        //TODO: check if token is held by caller
+        require(claimedWL[msg.sender] <= 10, "already claimed");
+        claimedWL[msg.sender] += amount;
         issueToken(msg.sender);
     }
 }

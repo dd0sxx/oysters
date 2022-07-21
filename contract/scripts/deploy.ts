@@ -35,7 +35,7 @@ async function main() {
   const contractFactory = await ethers.getContractFactory("Tiramisu");
   console.log('0')
 
-  const contract = await contractFactory.deploy("", merkleTree.getHexRoot());
+  const contract = await contractFactory.deploy("ipfs://QmQyGX78FSwoAgZBX3Q64ZCvofT737FrbBgCKwn7LyGAgy/", merkleTree.getHexRoot());
   console.log('1')
 
   await contract.deployed()
