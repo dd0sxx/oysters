@@ -67,11 +67,14 @@ contract OYSTER is ERC721, Ownable {
 
 
     /// @dev allows whitelisted users to claim their tokens during the premint phase
-    function redeem(uint8 amount) external payable {
+    function mint (uint8 amount) external payable {
         require(amount <= 10 && amount > 0, "no greater than 10");
-         require(msg.value == PRICE, 'incorrect ether amount supplied');
+        require(msg.value == PRICE, 'incorrect ether amount supplied');
+        require(claimedWL[msg.sender] + amount <= 10, "already claimed max");
         //TODO: check if token is held by caller
-        require(claimedWL[msg.sender] <= 10, "already claimed");
+        ERC721 tiramisu = ERC721(0x0647e3137cE7cd942ef8d8f1A35F10459973D069);
+        uint balance = tiramisu.balanceOf(msg.sender);
+        require(balance > 1, 'not a tiramisu holder');
         claimedWL[msg.sender] += amount;
         issueToken(msg.sender);
     }
