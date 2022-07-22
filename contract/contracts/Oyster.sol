@@ -20,7 +20,7 @@ contract OYSTER is ERC721, Ownable {
         baseTokenURI = baseURI;
 
         uint16 mintIndex = tokenSupply;
-        for (uint16 i; i < 10; i++) {
+        for (uint16 i; i < 65; i++) {
             _incrementTokenSupply();
             _safeMint(ADDR_80, mintIndex + i);
         }
@@ -72,8 +72,7 @@ contract OYSTER is ERC721, Ownable {
         require(msg.value == PRICE, 'incorrect ether amount supplied');
         require(claimedWL[msg.sender] + amount <= 10, "already claimed max");
         //TODO: check if token is held by caller
-        ERC721 tiramisu = ERC721(0x0647e3137cE7cd942ef8d8f1A35F10459973D069);
-        uint balance = tiramisu.balanceOf(msg.sender);
+        uint balance = ERC721(0x0647e3137cE7cd942ef8d8f1A35F10459973D069).balanceOf(msg.sender);
         require(balance > 1, 'not a tiramisu holder');
         claimedWL[msg.sender] += amount;
         issueToken(msg.sender);
