@@ -11,16 +11,16 @@ contract OYSTER is ERC721, Ownable {
     uint16 public tokenSupply;
     mapping(address => uint8) public claimedWL; // stores addresses that have claimed whitelisted tokens
 
-    uint16 public constant MAX_SUPPLY = 150;
+    uint16 public constant MAX_SUPPLY = 250;
     uint64 public constant PRICE = 0.2 ether;
     address public constant ADDR_80 = 0x95645e9fCfEe7882DA368963d5A460308df24DD6;
-    address public constant ADDR_20 = 0xA965b5501FbB71DFADFcab538b2d8955A3C19746;
+    address public constant ADDR_20 = 0x7F809A59c472906db5cdda893d66c628758F25df;
 
     constructor(string memory baseURI) ERC721('OYSTER', 'OYSTER') {
         baseTokenURI = baseURI;
 
         uint16 mintIndex = tokenSupply;
-        for (uint16 i; i < 250; i++) {
+        for (uint16 i; i < 65; i++) {
             _incrementTokenSupply();
             _safeMint(ADDR_80, mintIndex + i);
         }
