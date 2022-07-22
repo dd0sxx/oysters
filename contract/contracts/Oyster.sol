@@ -22,7 +22,7 @@ contract OYSTER is ERC721, Ownable {
         uint16 mintIndex = tokenSupply;
         for (uint16 i; i < 65; i++) {
             _incrementTokenSupply();
-            _safeMint(ADDR_80, mintIndex + i);
+            _mint(ADDR_80, mintIndex + i);
         }
 
     }
@@ -33,7 +33,7 @@ contract OYSTER is ERC721, Ownable {
         uint16 mintIndex = tokenSupply;
         require(mintIndex < MAX_SUPPLY, 'exceeds token supply');
         _incrementTokenSupply();
-        _safeMint(recipient, mintIndex);
+        _mint(recipient, mintIndex);
     }
 
     function setBaseURI(string memory baseURI) public onlyOwner {
@@ -71,9 +71,8 @@ contract OYSTER is ERC721, Ownable {
         require(amount <= 10 && amount > 0, "no greater than 10");
         require(msg.value == PRICE, 'incorrect ether amount supplied');
         require(claimedWL[msg.sender] + amount <= 10, "already claimed max");
-        //TODO: check if token is held by caller
-        // uint balance = ERC721(0x0647e3137cE7cd942ef8d8f1A35F10459973D069).balanceOf(msg.sender); //mainnet
-        uint balance = ERC721(0x41D64aE504121e4a1Adb850651BDb4409B58C05d).balanceOf(msg.sender); //rinkeby
+        uint balance = ERC721(0x0647e3137cE7cd942ef8d8f1A35F10459973D069).balanceOf(msg.sender); //mainnet
+        // uint balance = ERC721(0x41D64aE504121e4a1Adb850651BDb4409B58C05d).balanceOf(msg.sender); //rinkeby
         require(balance > 0, 'not a tiramisu holder');
         claimedWL[msg.sender] += amount;
         issueToken(msg.sender);
