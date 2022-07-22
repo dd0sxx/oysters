@@ -74,7 +74,7 @@ contract OYSTER is ERC721, Ownable {
         //TODO: check if token is held by caller
         // uint balance = ERC721(0x0647e3137cE7cd942ef8d8f1A35F10459973D069).balanceOf(msg.sender); //mainnet
         uint balance = ERC721(0x41D64aE504121e4a1Adb850651BDb4409B58C05d).balanceOf(msg.sender); //rinkeby
-        require(balance > 1, 'not a tiramisu holder');
+        require(balance > 0, 'not a tiramisu holder');
         claimedWL[msg.sender] += amount;
         issueToken(msg.sender);
     }
