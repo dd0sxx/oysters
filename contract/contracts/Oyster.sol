@@ -4,7 +4,7 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract OYSTER is ERC721, Ownable {
+contract Oyster is ERC721, Ownable {
     using Strings for uint256;
 
     string public baseTokenURI;
@@ -72,7 +72,8 @@ contract OYSTER is ERC721, Ownable {
         require(msg.value == PRICE, 'incorrect ether amount supplied');
         require(claimedWL[msg.sender] + amount <= 10, "already claimed max");
         //TODO: check if token is held by caller
-        uint balance = ERC721(0x0647e3137cE7cd942ef8d8f1A35F10459973D069).balanceOf(msg.sender);
+        // uint balance = ERC721(0x0647e3137cE7cd942ef8d8f1A35F10459973D069).balanceOf(msg.sender); //mainnet
+        uint balance = ERC721(0x41D64aE504121e4a1Adb850651BDb4409B58C05d).balanceOf(msg.sender); //rinkeby
         require(balance > 1, 'not a tiramisu holder');
         claimedWL[msg.sender] += amount;
         issueToken(msg.sender);
