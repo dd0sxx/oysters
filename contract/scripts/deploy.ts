@@ -19,7 +19,7 @@ async function main() {
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
   // We get the contract to deploy
-  const contractFactory = await ethers.getContractFactory("Oyster");
+  const contractFactory = await ethers.getContractFactory("OYSTER");
   console.log('0')
 
   const contract = await contractFactory.deploy("");

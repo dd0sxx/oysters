@@ -18,7 +18,7 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
-export interface OysterInterface extends utils.Interface {
+export interface OYSTERInterface extends utils.Interface {
   functions: {
     "ADDR_20()": FunctionFragment;
     "ADDR_80()": FunctionFragment;
@@ -222,12 +222,12 @@ export type TransferEvent = TypedEvent<
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
-export interface Oyster extends BaseContract {
+export interface OYSTER extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: OysterInterface;
+  interface: OYSTERInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,

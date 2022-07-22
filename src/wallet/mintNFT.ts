@@ -35,7 +35,7 @@ export const mintNFT = async ({
     if (isPremintPhase) {
       nftTxn = await redeemTokenForWhitelisted({ contract });
     } else {
-      nftTxn = await contract.mint({
+      nftTxn = await contract.mint(1, {
         value: ethers.utils.parseEther(tokenPriceDecimal), // ether in this case MUST be a string
       });
     }

@@ -4,7 +4,7 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Oyster is ERC721, Ownable {
+contract OYSTER is ERC721, Ownable {
     using Strings for uint256;
 
     string public baseTokenURI;
