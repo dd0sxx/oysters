@@ -1,10 +1,9 @@
 import { Contract } from "ethers";
 
-export const checkIfCanMint = async ({
-  contract,
-}: {
+export const checkIfCanMint = async ({}: // contract,
+{
   contract: Contract;
 }): Promise<boolean> => {
-  console.log(contract);
+  // console.log(contract);
   return true;
 };
