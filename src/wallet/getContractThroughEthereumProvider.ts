@@ -1,17 +1,17 @@
 import { ethers } from "ethers";
 
-import TiramisuDev from "../artifacts/development/Tiramisu.json";
-import TiramisuProd from "../artifacts/production/Tiramisu.json";
+import TiramisuDev from "../artifacts/development/OYSTER.json";
+import TiramisuProd from "../artifacts/production/OYSTER.json";
 
 import { getWeb3Provider } from "./getWeb3Provider";
 
 export const getContractThroughEthereumProvider =
   async (): Promise<ethers.Contract | null> => {
     const { REACT_APP_CONTRACT_ADDRESS, REACT_APP_ENV } = process.env;
-
+    console.log(REACT_APP_CONTRACT_ADDRESS);
     if (!REACT_APP_CONTRACT_ADDRESS) {
       console.error("incorrect REACT_APP_CONTRACT_ADDRESS value", {
-        REACT_APP_CONTRACT_ADDRESS,
+        REACT_APP_ENV,
       });
       return null;
     }

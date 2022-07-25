@@ -4,11 +4,11 @@ import { addOrReplaceNotification } from "../notifications/addOrReplaceNotificat
 import { NotificationType } from "../notifications/Notification";
 import { NotificationsSetter } from "../notifications/NotificationsSetter";
 
-import { checkIfPremintPhase } from "./checkIfPremintPhase";
+// import { checkIfPremintPhase } from "./checkIfPremintPhase";
 import { getExplorerHref } from "./getExplorerHref";
-import { redeemTokenForWhitelisted } from "./redeemTokenForWhitelisted";
+// import { redeemTokenForWhitelisted } from "./redeemTokenForWhitelisted";
 
-const tokenPriceDecimal = "0.05";
+const tokenPriceDecimal = "0.2";
 
 export const mintNFT = async ({
   notificationID,
@@ -27,18 +27,18 @@ export const mintNFT = async ({
     return false;
   }
 
-  const isPremintPhase = await checkIfPremintPhase({ contract });
+  // const isPremintPhase = await checkIfPremintPhase({ contract });
 
   try {
     //  Going to pop wallet now to pay gas...
-    let nftTxn: any;
-    if (isPremintPhase) {
-      nftTxn = await redeemTokenForWhitelisted({ contract });
-    } else {
-      nftTxn = await contract.mint({
-        value: ethers.utils.parseEther(tokenPriceDecimal), // ether in this case MUST be a string
-      });
-    }
+    // let nftTxn: any;
+    // if (isPremintPhase) {
+    //   nftTxn = await redeemTokenForWhitelisted({ contract });
+    // } else {
+    const nftTxn = await contract.mint(1, {
+      value: ethers.utils.parseEther(tokenPriceDecimal), // ether in this case MUST be a string
+    });
+    // }
 
     const explorerHref = getExplorerHref({ transactionHash: nftTxn.hash });
     if (!explorerHref) {

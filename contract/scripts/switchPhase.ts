@@ -1,6 +1,6 @@
 import {ethers} from 'hardhat';
 
-const CONTRACT_ADDRESS = "0x41D64aE504121e4a1Adb850651BDb4409B58C05d";
+const CONTRACT_ADDRESS = "0xdED6483cB6cCCE2AE8271c808Bd384b99d44b55E";
 
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command

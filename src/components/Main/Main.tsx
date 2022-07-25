@@ -50,23 +50,24 @@ const contentByAppStage: Record<
               startMintingProcess({ setHowManyTokensLeft });
             }}
           >
-            Mint Tiramisu
+            Mint Oyster
           </button>
         </>
       );
     },
     className: "connected",
-    imgSrc: "/imgs/zap_multicolor_no-bg.gif",
+    imgSrc: "/imgs/oyster_eyes.gif",
   },
   [AppStage.disconnected]: {
     BelowHeader: ({ connectWallet }) => (
-      <button className="button-under-header" onClick={connectWallet}>
-        Connect Wallet
-      </button>
+      <div onChange={connectWallet}></div>
+      // <button className="button-under-header" onClick={connectWallet}>
+      //   Connect Wallet
+      // </button>
     ),
-    Header: () => <h1>{"tiramisu recipe..."}</h1>,
+    Header: () => <h1>{"oyster recipe..."}</h1>,
     className: "disconnected",
-    imgSrc: "/imgs/rainbow-EX.gif",
+    imgSrc: "/imgs/oyster_boiling.gif",
   },
   [AppStage.notOnPreMintList]: {
     BelowHeader: () => (
@@ -76,7 +77,7 @@ const contentByAppStage: Record<
     ),
     Header: () => <h1>{"sorry..."}</h1>,
     className: "notOnPreMintList",
-    imgSrc: "/imgs/rotten_no--bg.gif",
+    imgSrc: "/imgs/oyster_rotten.gif",
   },
 };
 
