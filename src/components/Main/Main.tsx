@@ -60,9 +60,10 @@ const contentByAppStage: Record<
   },
   [AppStage.disconnected]: {
     BelowHeader: ({ connectWallet }) => (
-      <button className="button-under-header" onClick={connectWallet}>
-        Connect Wallet
-      </button>
+      <div onChange={connectWallet}></div>
+      // <button className="button-under-header" onClick={connectWallet}>
+      //   Connect Wallet
+      // </button>
     ),
     Header: () => <h1>{"oyster recipe..."}</h1>,
     className: "disconnected",

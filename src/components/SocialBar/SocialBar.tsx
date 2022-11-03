@@ -2,7 +2,7 @@ import { FC } from "react";
 
 export const socialLinksBySrc: { href: string; imgSrc: string }[] = [
   {
-    href: "https://opensea.io/collection/tiramisu-recipe-by-stillz",
+    href: "https://opensea.io/collection/oyster-stillz",
     imgSrc: "/imgs/opensea_logo.png",
   },
   { href: "https://discord.gg/aXMDejtfK7", imgSrc: "/imgs/discord_logo.png" },
